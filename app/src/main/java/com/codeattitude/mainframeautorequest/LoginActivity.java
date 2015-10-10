@@ -27,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         password.setTypeface(tf);
         login.setTypeface(tf);
 
+        // get the data and create a request
+
 
     }
 

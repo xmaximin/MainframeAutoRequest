@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MainframeAutoRequest</string>
+    <string name="title_activity_requests">RequestsActivity</string>
+
+
+
+    <string name="button_login">LOGIN</string>
+
+    <string name="button_username">Username</string>
+    <string name="button_password">Password</string>
 </resources>

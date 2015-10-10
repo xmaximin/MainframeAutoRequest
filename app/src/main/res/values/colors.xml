@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorBackgroundLoginButton">#454E4F</color>
+    <color name="colorTextLoginButton">#E9ECEC</color>
+
+    <color name="colorGreySendRequestButton">#454E4F</color>
+    <color name="colorUsernameAndPasswordPlaceholder">#BBC5C6</color>
+
 </resources>

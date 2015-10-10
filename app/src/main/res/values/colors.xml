@@ -8,5 +8,7 @@
 
     <color name="colorGreySendRequestButton">#454E4F</color>
     <color name="colorUsernameAndPasswordPlaceholder">#BBC5C6</color>
+    <color name="colorBorderUsernamePassword">#D0D0D0</color>
 
+    <color name="colorRed">#FF0000</color>
 </resources>

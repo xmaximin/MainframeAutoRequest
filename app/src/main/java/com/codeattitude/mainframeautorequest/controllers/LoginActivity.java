@@ -1,11 +1,14 @@
-package com.codeattitude.mainframeautorequest;
+package com.codeattitude.mainframeautorequest.controllers;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.codeattitude.mainframeautorequest.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,12 +25,10 @@ public class LoginActivity extends AppCompatActivity {
 
         // Set current resources
         setResources();
-        Typeface tf = getTypeFaceFont("fonts/Museo Sans/MuseoSans-100.otf");
-        username.setTypeface(tf);
-        password.setTypeface(tf);
-        login.setTypeface(tf);
+        setColorAndFont();
 
-        // get the data and create a request
+        // attach event on button
+
 
 
     }
@@ -43,6 +44,14 @@ public class LoginActivity extends AppCompatActivity {
         username = (EditText)findViewById(R.id.editTextUsername);
         password = (EditText)findViewById(R.id.editTextPassword);
         login = (Button) findViewById(R.id.login);
+    }
+
+    private void setColorAndFont(){
+        Typeface tf = getTypeFaceFont("fonts/Museo Sans/MuseoSans-300.otf");
+        username.setTypeface(tf, Typeface.BOLD);
+        password.setTypeface(tf, Typeface.BOLD);
+        login.setTypeface(tf, Typeface.BOLD);
+
     }
 
     private Typeface getTypeFaceFont(String fontfile){

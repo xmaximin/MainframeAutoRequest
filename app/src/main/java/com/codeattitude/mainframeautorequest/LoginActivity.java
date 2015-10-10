@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Set current resources
         setResources();
-        Typeface tf = getTypeFaceFont("fonts/MuseoSans-100.otf");
+        Typeface tf = getTypeFaceFont("fonts/Museo Sans/MuseoSans-100.otf");
         username.setTypeface(tf);
         password.setTypeface(tf);
         login.setTypeface(tf);

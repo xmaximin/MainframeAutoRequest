@@ -32,7 +32,9 @@
             android:hint="@string/button_username"
             android:layout_marginBottom="22dp"
             android:id="@+id/editText_username"
-            android:layout_gravity="center_horizontal" />
+            android:inputType="text|textFilter|textNoSuggestions"
+            android:layout_gravity="center_horizontal"
+            />
 
         <EditText
             android:layout_width="match_parent"
@@ -58,6 +60,12 @@
             android:text="@string/button_login"
             android:id="@+id/button_login"
             android:layout_gravity="center_horizontal" />
+
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/loader" />
     </LinearLayout>
 
 

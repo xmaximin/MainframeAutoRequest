@@ -18,8 +18,5 @@ public interface UserService {
     Call<User> getUser(@Header("Authorization") String authorization);
 
 
-    @GET("views/index_summary")
-    Call<IndexSummary> getIndexSummary(@Header("Mainframe-Token") String authorization);
-
 
 }

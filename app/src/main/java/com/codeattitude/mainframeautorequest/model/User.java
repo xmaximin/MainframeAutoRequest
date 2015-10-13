@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class User {
 
     public static final String TOKEN = "TOKEN_KEY";
+    public static final String IS_ALREADY_LOGGED = "IS_ALREADY_LOGGED";
     public static final String USERNAME = "USERNAME_KEY";
     public static final String PASSWORD = "PASSWORD_KEY";
 

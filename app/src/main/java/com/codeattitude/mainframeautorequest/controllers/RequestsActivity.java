@@ -9,48 +9,37 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.codeattitude.mainframeautorequest.R;
 import com.codeattitude.mainframeautorequest.adapter.ResquestAdapter;
-import com.codeattitude.mainframeautorequest.api.TokenAuthenticator;
-import com.codeattitude.mainframeautorequest.api.UserService;
+import com.codeattitude.mainframeautorequest.api.RefreshTokenService;
 import com.codeattitude.mainframeautorequest.config.ApiConfig;
-import com.codeattitude.mainframeautorequest.model.IndexSummary;
 import com.codeattitude.mainframeautorequest.model.User;
-import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.ResponseBody;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
-
 public class RequestsActivity extends Activity {
 
 
-
-    private static final String TAG = "LoginActivity";
-
     public static final String PREFS_NAME = "MFAutoRequestPrefsFile";
-
-
+    private static final String TAG = "LoginActivity";
+    public static ArrayList<User> listU = new ArrayList<User>();
+    private final OkHttpClient client = new OkHttpClient();
     // current resources
     Button buttonExpire;
     Button buttonLogout;
     Button buttonSendRequest;
-    public static ArrayList<User> listU = new ArrayList<User>();
-    ResquestAdapter adapter ;
-
+    ResquestAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +53,8 @@ public class RequestsActivity extends Activity {
         setResources();
 
         // init the listview
-        final ResquestAdapter adapter = new ResquestAdapter(this,R.layout.list_row_request, listU);
-        ListView list = (ListView)findViewById(R.id.list);
+        final ResquestAdapter adapter = new ResquestAdapter(this, R.layout.list_row_request, listU);
+        ListView list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
 
 
@@ -76,68 +65,118 @@ public class RequestsActivity extends Activity {
                 // get token and username and password
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                 String token = settings.getString(User.TOKEN, "default_token");
-                Log.d(TAG, "log token:"+token);
-                String username = settings.getString(User.USERNAME, "default_username");
-                String password = settings.getString(User.PASSWORD, "default_password");
+                final String username = settings.getString(User.USERNAME, "default_username");
+                final String password = settings.getString(User.PASSWORD, "default_password");
 
-                // this will automatically retry 3 times if 401 is detected try if un
-                // https://github.com/square/okhttp/wiki/Recipes#handling-authentication
-                TokenAuthenticator authAuthenticator = new TokenAuthenticator();
-                authAuthenticator.setUsername(username);
-                authAuthenticator.setPassword(password);
-
-                OkHttpClient okHttpClient = new OkHttpClient();
-                okHttpClient.setAuthenticator(authAuthenticator);
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(ApiConfig.baseUrl)
-                        .client(okHttpClient)
-                        .addConverterFactory(GsonConverterFactory.create())
+                Request request = new Request.Builder()
+                        .url(ApiConfig.baseUrl+"views/index_summary")
+                        .addHeader("Mainframe-Token ", token)
                         .build();
 
-                UserService service = retrofit.create(UserService.class);
 
-                Call<IndexSummary> user = service.getIndexSummary(token);
-
-                user.enqueue(new Callback<IndexSummary>() {
+                client.newCall(request).enqueue(new com.squareup.okhttp.Callback() {
                     @Override
-                    public void onResponse(Response<IndexSummary> response, Retrofit retrofit) {
-                        // response.isSuccess() is true if the response code is 2xx
-                        if (response.isSuccess()) {
-                            IndexSummary indexSummary = response.body();
+                    public void onFailure(Request request, IOException e) {
+
+                        // handle execution failures like no internet connectivity
+                        Log.d(TAG, "onFailure reached!");
+                    }
+
+                    @Override
+                    public void onResponse(com.squareup.okhttp.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+
                             User user = new User();
                             user.setStatus(Integer.toString(response.code()));
-                            Gson gson = new Gson();
-                            gson.toJson(indexSummary).toString();
-                            user.setResponse(gson.toJson(indexSummary).toString());
+                            user.setResponse(response.body().string());
                             DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
                             String formattedDate = dateFormat.format(new Date()).toString();
                             user.setDateReceived(formattedDate);
                             listU.add(user);
-                            adapter.notifyDataSetChanged();
-
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
 
                         } else {
-                            int statusCode = response.code();
-                            // handle request errors yourself
-                            ResponseBody errorBody = response.errorBody();
                             User user = new User();
                             user.setStatus(Integer.toString(response.code()));
-
                             listU.add(user);
-                            adapter.notifyDataSetChanged();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
 
+                            if( response.code() == 401){
+
+
+                                String credentials = Credentials.basic(username, password);
+
+                                Request request = new Request.Builder()
+                                        .url(ApiConfig.baseUrl+"/authenticate")
+                                        .addHeader("Authorization ", credentials)
+                                        .build();
+
+
+                                client.newCall(request).enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(Request request, IOException e) {
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(Response response) throws IOException {
+                                        System.out.println(response);
+
+                                    }
+                                });
+
+
+                                String token1 =   RefreshTokenService.refreshToken(username,password);
+
+
+                                Request request = new Request.Builder()
+                                        .url(ApiConfig.baseUrl+"/views/index_summary")
+                                        .addHeader("Mainframe-Token ", token1)
+                                        .build();
+
+                                client.newCall(request).enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(Request request, IOException e) {
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(Response response) throws IOException {
+                                        User user = new User();
+                                        user.setStatus(Integer.toString(response.code()));
+                                        user.setResponse(response.body().string());
+                                        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                                        String formattedDate = dateFormat.format(new Date()).toString();
+                                        user.setDateReceived(formattedDate);
+                                        listU.add(user);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        });
+
+                                    }
+                                });
+
+
+                            }
                         }
 
-                        Log.d(TAG, "onResponse reached!");
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        // handle execution failures like no internet connectivity
-                        Log.d(TAG, "onFailure reached!");
+                        Log.d(TAG, "onResponse reached!" + response.code());
                     }
                 });
+
 
             }
         });
@@ -166,12 +205,12 @@ public class RequestsActivity extends Activity {
                 editor.remove(User.TOKEN);
                 editor.remove(User.USERNAME);
                 editor.remove(User.PASSWORD);
+                editor.putBoolean(User.IS_ALREADY_LOGGED, false);
                 editor.commit();
                 goBack();
 
             }
         });
-
 
 
     }
@@ -183,19 +222,20 @@ public class RequestsActivity extends Activity {
         buttonSendRequest = (Button) findViewById(R.id.button_sendRequest);
     }
 
-    private String get(String username,String password){
+    private String get(String username, String password) {
         String authString = username + ":" + password;
         byte[] authEncBytes = Base64.encode(authString.getBytes(), Base64.NO_WRAP);
         String authStringEnc = new String(authEncBytes);
         return authStringEnc;
     }
 
-    private void goBack(){
+    private void goBack() {
         Intent intent = new Intent(RequestsActivity.this,
                 LoginActivity.class);
         startActivity(intent);
         finish();
     }
+
 
 
 }

@@ -46,6 +46,20 @@ public class LoginActivity extends AppCompatActivity {
         setResources();
         setColorAndFont();
 
+
+
+
+        // if the user was already logged in go to request screen directly
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        Boolean isAlreadyLogged = settings.getBoolean(User.IS_ALREADY_LOGGED, false);
+        if(isAlreadyLogged){
+            // then go to RequestsActivity
+            goToRequestsActivityAndFinish();
+        }
+
+
+
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // retrieve login access info
@@ -77,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString(User.USERNAME,editTestUsername.getText().toString());
                             editor.putString(User.PASSWORD, editTextPassword.getText().toString());
                             editor.putString(User.TOKEN,user.getToken());
+                            editor.putBoolean(User.IS_ALREADY_LOGGED,true);
                             editor.commit();
 
                             // then go to RequestsActivity

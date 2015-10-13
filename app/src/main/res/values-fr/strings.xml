@@ -3,7 +3,17 @@
     <string name="app_name">MainframeAutoRequest</string>
 
 
+    <!-- Login Activity -->
     <string name="button_login">INDENTIFICATION</string>
     <string name="button_username">Identifiant</string>
     <string name="button_password">Mot de passe</string>
+
+    <!-- Resquest Activity -->
+    <string name="label_status">STATUT:</string>
+    <string name="label_url">URL:</string>
+    <string name="label_token">Token:</string>
+    <string name="label_response">Réponse:</string>
+    <string name="button_expire">EXPIRE</string>
+    <string name="button_logout">DÉCONNEXION</string>
+
 </resources>

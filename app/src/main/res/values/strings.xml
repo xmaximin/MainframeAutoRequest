@@ -4,8 +4,19 @@
 
 
 
+    <!-- Login Activity -->
     <string name="button_login">LOGIN</string>
-
     <string name="button_username">Username</string>
     <string name="button_password">Password</string>
+
+    <!-- Resquest Activity -->
+    <string name="label_status">STATUS:</string>
+    <string name="label_url">URL:</string>
+    <string name="label_token">Token:</string>
+    <string name="label_response">Response:</string>
+    <string name="button_expire"> EXPIRE </string>
+    <string name="button_logout"> LOGOUT </string>
+    <string name="button_request">SEND REQUEST</string>
+
+
 </resources>

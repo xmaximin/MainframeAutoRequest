@@ -10,5 +10,13 @@
     <color name="colorUsernameAndPasswordPlaceholder">#BBC5C6</color>
     <color name="colorBorderUsernamePassword">#D0D0D0</color>
 
-    <color name="colorRed">#FF0000</color>
+    <color name="colorRequestBackground">#F8F8F8</color>
+    <color name="colorBorderRequest">#D0D0D0</color>
+    <color name="colorBackgroundSendRequestButton">#454E4F</color>
+    <color name="colorTextRequestButton">#E9ECEC</color>
+
+
+    <color name="colorBackgroundTopBarRequest">#859699</color>
+
+
 </resources>

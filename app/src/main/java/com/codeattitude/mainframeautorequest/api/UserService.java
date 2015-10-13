@@ -1,6 +1,8 @@
 package com.codeattitude.mainframeautorequest.api;
 
+import com.codeattitude.mainframeautorequest.model.IndexSummary;
 import com.codeattitude.mainframeautorequest.model.User;
+import com.google.gson.Gson;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -14,6 +16,10 @@ public interface UserService {
 
     @GET("authenticate")
     Call<User> getUser(@Header("Authorization") String authorization);
+
+
+    @GET("views/index_summary")
+    Call<IndexSummary> getIndexSummary(@Header("Mainframe-Token") String authorization);
 
 
 }

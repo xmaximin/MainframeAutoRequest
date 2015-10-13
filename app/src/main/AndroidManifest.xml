@@ -21,6 +21,7 @@
         <activity
             android:name=".controllers.RequestsActivity"
             android:label="@string/title_activity_requests"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" >
         </activity>
     </application>
